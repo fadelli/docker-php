@@ -1,0 +1,30 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: "3.1"
+services:
+    webserver:
+      image: nginx:alpine
+      container_name: php-dev
+      working_dir: /application
+      volumes:
+          - ../bellcloud-5si-back/:/application
+          - ./phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      ports:
+       - "80:80"
+      environment:        
+        VIRTUAL_HOST: bell.dev.local
+        VIRTUAL_PORT: 80
+      expose:
+        - "80"
+        
+    php-fpm:
+      build: phpdocker/php-fpm
+      container_name: php-fpm
+      working_dir: /application
+      environment:
+        XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=9000 remote_enable=1   
+      volumes:
+        - ../bellcloud-5si-back/:/application
+        - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
+
